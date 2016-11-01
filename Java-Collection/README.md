@@ -66,16 +66,117 @@ Java集合的Collection接口和Map接口
 而且AbstractList和AbstractSet抽象类都继承了AbstractCollection抽象类.
 
 ##AbstractCollection抽象类
-在AbstractCollection抽象类里面实现了Collection接口里定义的方法,但是并没有实现equals和haseCode方法.
+在AbstractCollection抽象类里面实现了Collection接口里定义的方法,但是并没有实现equals和hashCode方法.
 
 ##AbstractSet抽象类
-因为Set接口和Collection接口里面定义的方法一样,所以AbstractSet抽象类里面只是实现了equals和haseCode方法,
+因为Set接口和Collection接口里面定义的方法一样,所以AbstractSet抽象类里面只是实现了equals和hashCode方法,
 
 并且重写了removeAll方法.
 
 ##AbstractList抽象类
 AbstractList抽象类继承了AbstractCollection抽象类的方法并实现了List接口中其他的方法,并且在内部实现了Iterator接口的实现类.
 
-##Set -> HashSet
+##Set -> HashSet(继承AbstractSet抽象类)
 查看HashSet的实现源码你会发现HashSet是用HashMap来实现的,如下图:
-![image](http://github.com/zhangff01/Java-Summary/Java-Collection/HashSet构造函数.png)
+![image](https://github.com/zhangff01/Java-Summary/blob/master/Java-Collection/HashSet%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0.png)
+
+然后我们继续查看代码:
+```java
+  private static final Object PRESENT = new Object();
+  ...
+  public boolean add(E e) {
+        return map.put(e, PRESENT)==null;
+  }
+  ...
+```
+可以看到HashSet添加一个新元素其实是在map里面put一个(元素,PRESENT)值,只不过这个元素的value值都是一个Object对象.
+
+(下面会讲HashMap是怎么实现的)
+
+HashSet的小例子:
+```java
+  public class CollectionMain {
+
+	  public static void main(String[] args) {
+		  Set<Student> set=new HashSet<Student>();
+		  set.add(new Student("清华附中", "小王", 15));
+		  set.add(new Student("清华附中", "小王", 15));
+		  set.add(new Student("清华附中", "小张", 15));
+		  set.add(null);
+		  set.add(null);
+		  System.out.println("集合长度:"+set.size());
+	  }
+
+  }
+
+  class Student{
+	  private String school;
+	  private String name;
+	  private int age;
+	
+	  public Student(String school,String name,int age) {
+		  this.school=school;
+		  this.name=name;
+		  this.age=age;
+	  }
+	
+	  @Override
+	  public boolean equals(Object o){
+		  if(o==null){
+			  return false;
+		  }
+		  if(o==this){
+			  return true;
+		  }
+		  if(o instanceof Student){
+			  Student s=(Student)o;
+			  return (s.school.equals(school)&&s.name.equals(name)&&s.age==age);
+		  }
+		  return false;
+	  }
+	
+	  @Override
+	  public int hashCode(){
+		  int h=1;
+		  h =31*h+((school.equals("")==true)?0:school.hashCode());
+		  h =31*h+((name.equals("")==true)?0:name.hashCode());
+		  return h;
+	  }
+  }
+  ...
+  //输出结果为 集合长度:3
+```
+##Set -> TreeSet(继承AbstractSet抽象类并实现了NavigableSet接口(继承自SortedSet))
+和HashSet集合一样,TreeSet的实现也是采用了Map来实现的,不过是NavigableMap.
+
+采用TreeSet的话就是可以对集合的元素进行排序.
+方法一:
+```java
+  Set<Student> set=new TreeSet<Student>(new Comparator<Student>(){
+			@Override
+			public int compare(Student s1, Student s2) {
+				if(s1==null||s2==null){
+					return 1;
+				}
+				if(s1.getAge()>s2.getAge()){
+					return 1;
+				}else if(s1.getAge()<s2.getAge()){
+					return -1;
+				}else{
+					return 0;
+				}
+			}
+	});
+  //在TreeSet集合初始化的时候用内部类实现Comparator接口
+```
+方法二:
+```java
+  class Student implements Comparable<Student>{
+    @Override
+    public int CompareTo(Student o){
+      
+    }
+  }
+  //对象实现Comparable接口并实现CompareTo方法(a>b返回1为正序,返回-1位倒序)
+```
+
