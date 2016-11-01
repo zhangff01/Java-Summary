@@ -179,4 +179,15 @@ HashSet的小例子:
   }
   //对象实现Comparable接口并实现CompareTo方法(a>b返回1为正序,返回-1位倒序)
 ```
+##Set -> LinkedHashSet(继承自HashSet,是其子类)
+LinkedHashSet集合也是根据元素hashCode值来决定元素存储位置,但它同时使用链表维护元素的次序.
+这样使得元素看起来是以插入的顺序保存的,也就是说,当遍历LinkedHashSet集合里元素时.
+HashSet将会按元素的添加顺序来访问集合里的元素。
+
+##List -> ArrayList(继承了AbstractList抽象类并实现List接口)
+终于轮到我们最最熟悉的ArrayList集合了.ArrayList顾名思义就是用Array数组实现的集合.
+
+优点是在末位新增特别快,缺点是删除比较慢.
+
+##List -> LinkedList(继承自AbstractSequentialList抽象类(继承于AbstractList抽象类),实现List和Deque接口)
 
