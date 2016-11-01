@@ -1,7 +1,11 @@
 #Java-集合
 Java集合的Collection接口和Map接口
 
-查看java.util下的源码找到Collection接口,可以看到在Collection接口中定义了一下方法:
+查看java.util下的源码找到Collection接口,可以看到它继承了Iterable接口,所有实现了Collection接口的容器类都有iterator方法，
+
+用于返回一个实现了Iterator接口的对象。Iterator对象称作迭代器，Iterator接口方法能以迭代方式逐个访问集合中各个元素.
+
+在Collection接口中定义了一下方法:
 ```java
   int size();       //@return the number of elements in this collection(返回集合中的元素个数)
   boolean isEmpty();//@return true if this collection contains no elements(集合中没有数据时返回true)
@@ -45,4 +49,32 @@ Java集合的Collection接口和Map接口
   E get(int index);              //E返回类型:泛型控制的集合元素的类型
   E set(int index, E element);
   void add(int index, E element);//在指定位置处插入元素
+  E remove(int index);           //@return the element previously at the specified position(删除并返回指定d位置的元素)
+  int indexOf(Object o);         //o不在集合里面返回-1,o在集合里面有多个对应的话返回index值小的
+  int lastIndexOf(Object o);     //o不在集合里面返回-1,在的话返回index最大的
+  ListIterator<E> listIterator();//迭代器
+  ListIterator<E> listIterator(int index);
+  List<E> subList(int fromIndex, int toIndex);//@return a view of the specified range within this list
 ```
+*在Set接口中的方法和Collection接口中的一样.
+
+##AbstractCollection,AbstractList和AbstractSet抽象类
+既然有了接口就要有类去实现它,要不然这个接口就没有意义(就像有制度就要去遵循一样,没有人遵循的制度就没有存在的意义)
+
+继续往下看就会发现,有三个抽象类AbstractCollection,AbstractList和AbstractSet分别实现了Collection,List和Set接口.
+
+而且AbstractList和AbstractSet抽象类都继承了AbstractCollection抽象类.
+
+##AbstractCollection抽象类
+在AbstractCollection抽象类里面实现了Collection接口里定义的方法,但是并没有实现equals和haseCode方法.
+
+##AbstractSet抽象类
+因为Set接口和Collection接口里面定义的方法一样,所以AbstractSet抽象类里面只是实现了equals和haseCode方法,
+
+并且重写了removeAll方法.
+
+##AbstractList抽象类
+AbstractList抽象类继承了AbstractCollection抽象类的方法并实现了List接口中其他的方法,并且在内部实现了Iterator接口的实现类.
+
+##Set -> HashSet
+
