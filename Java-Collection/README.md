@@ -77,4 +77,5 @@ Java集合的Collection接口和Map接口
 AbstractList抽象类继承了AbstractCollection抽象类的方法并实现了List接口中其他的方法,并且在内部实现了Iterator接口的实现类.
 
 ##Set -> HashSet
-
+查看HashSet的实现源码你会发现HashSet是用HashMap来实现的,如下图:
+![image](http://github.com/zhangff01/Java-Summary/Java-Collection/HashSet构造函数.png)
