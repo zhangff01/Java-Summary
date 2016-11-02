@@ -190,4 +190,117 @@ HashSet将会按元素的添加顺序来访问集合里的元素。
 优点是在末位新增特别快,缺点是删除比较慢.
 
 ##List -> LinkedList(继承自AbstractSequentialList抽象类(继承于AbstractList抽象类),实现List和Deque接口)
+ArrayList是基于数组实现的,而LinkedList是基于链表的数据结构实现的.
+阅读代码:
+```java
+    transient int size = 0;
+    //集合的长度
+    /**
+     * Pointer to first node.
+     * Invariant: (first == null && last == null) ||
+     *            (first.prev == null && first.item != null)
+     */
+    transient Node<E> first;
+    //指向链表的第一个节点
+    /**
+     * Pointer to last node.
+     * Invariant: (first == null && last == null) ||
+     *            (last.next == null && last.item != null)
+     */
+    transient Node<E> last;
+    //指向链表的最后一个节点	
+    /**
+     * Constructs an empty list.
+     */
+    public LinkedList() {
+    }
+
+    /**
+     * Constructs a list containing the elements of the specified
+     * collection, in the order they are returned by the collection's
+     * iterator.
+     *
+     * @param  c the collection whose elements are to be placed into this list
+     * @throws NullPointerException if the specified collection is null
+     */
+    public LinkedList(Collection<? extends E> c) {
+        this();
+        addAll(c);
+    }
+    //如果是以其它集合为构造函数的参数会先调用LinkedList的默认无参的构造函数,然后再调用addAll方法.
+```
+链表的数据结构:
+```java
+   private static class Node<E> {
+        E item;
+        Node<E> next;
+        Node<E> prev;
+
+        Node(Node<E> prev, E element, Node<E> next) {
+            this.item = element;
+            this.next = next;
+            this.prev = prev;
+        }
+   }
+```
+LinkedList的add方法:
+```java
+   public boolean add(E e) {
+       linkLast(e);
+       return true;
+   }
+   ...
+   void linkLast(E e) {
+       final Node<E> l = last;
+       final Node<E> newNode = new Node<>(l, e, null);
+       last = newNode;
+       if (l == null)
+           first = newNode;
+       else
+           l.next = newNode;
+       size++;
+       modCount++;
+   }   
+```
+调用add方法就是调用linkLast方法:判断链表的最后一个节点last是不是为null,为null(代表集合为null)则把新节点e作为第一个first节点
+
+不为空则把最后一个节点last的的next节点指向新节点e即可(modCount是AbstractList定义的字段,代表集合修改的次数).
+
+再来看看LinkedList的get(int index)方法:
+```java
+   public E get(int index) {
+       checkElementIndex(index);
+       return node(index).item;
+   }
+   ...
+   Node<E> node(int index) {
+       // assert isElementIndex(index);
+
+       if (index < (size >> 1)) {
+           Node<E> x = first;
+           for (int i = 0; i < index; i++)
+               x = x.next;
+           return x;
+       } else {
+           Node<E> x = last;
+           for (int i = size - 1; i > index; i--)
+               x = x.prev;
+           return x;
+       }
+   }
+```
+checkElementIndex方法相当于一个assert断言,当输入的index不正确时会抛出错误,程序无法执行下去.
+
+get方法最后return了一个node节点的item值(因为一个node类型包含item,prev,next三个node实例对象).
+
+在node(int index)方法中可以看到为了获得索引值为index的数据,都要用for循环让node节点追溯index次
+
+(循环之前使用中位值size>>1与index比较大小来剔除不必要的遍历)
+
+符合LinkedList适合删除添加数据,不适合取数据的场景.
+
+##List -> Vector(继承自AbstractList抽象类并实现List接口)
+阅读Vector的源码可以发现Vector同样是用数组来实现的,只是许多操作集合的方法使用了synchronized同步关键字
+
+来实现了多线程之间使用集合的线程安全.
 
