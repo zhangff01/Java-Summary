@@ -304,3 +304,53 @@ get方法最后return了一个node节点的item值(因为一个node类型包含i
 
 来实现了多线程之间使用集合的线程安全.
 
+##*Java集合的Map接口
+```java
+   public interface Map<K,V>{
+   	int size();	  //返回map中key-value映射的个数
+	boolean isEmpty();//map中key-value映射的个数大于零时返回true
+	boolean containsKey(Object key);//map中含有key时返回true(keyb是对象时会先判断hashCode,相等再判断equals)
+	boolean containsValue(Object value);//同上
+	V get(Object key);//返回key对应的value值
+	V put(K key,V value);//返回key之前对应的value值(或null)
+	V remove(Object key);//返回key之前对应的value值(或null)
+	void putAll(Map<? extends K, ? extends V> m);
+	void clear();	     //清空map
+	Set<K> keySet();     //以set集合(Set接口的实现类)的形式返回map中包含的所有key
+	Collection<V> values();//以Collection集合(Collection接口的实现类)的形式返回map中包含的所有key
+	Set<Map.Entry<K, V>> entrySet();
+	//在我看来Entry接口就是对map中key-value映射的封装,同时持有key和key对应的value.
+	//源码中是这样说的:return a set view of the mappings contained in this map(返回map中)
+	//Entry是一个接口,entrySetg方法返回一个包含Entry接口实现的类的set集合.
+	interface Entry<K,V> {
+   		K getKey();
+		V getValue();
+		V setValue(V value);
+		boolean equals(Object o);
+		int hashCode();
+   	}
+	boolean equals(Object o);
+	int hashCode();
+   }
+```
+与有抽象类AbstractList,AbstractSet分别实现List,Set接口一样,抽象类AbstractMapc实现Map接口.
+
+我们来看AbstractMap中size方法的实现:
+```java
+    public int size() {
+        return entrySet().size();
+    }
+```
+是不是对Entry概念有更清晰的认识.
+
+再看迭代器:
+```java
+	//AbstractMap中的entrySet
+	public abstract Set<Entry<K,V>> entrySet();
+	//因为entrySet是一个set的实现类,继承自AbstractCollection抽象类
+	//在AbstractCollection抽象类中有如下代码:
+	public abstract Iterator<E> iterator();
+	//所以util下所有的集合实现类都可以直接使用iterator迭代器
+	//(Iterator接口中定义了boolean hasNext(),E next()和void remove()三个方法)
+```
+##Map -> HashMap(继承AbstractMap抽象类并实现Map接口)
