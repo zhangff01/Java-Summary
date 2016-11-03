@@ -521,6 +521,17 @@ threshold这个变量在HashMap初始化之后如果不做任何操作(也就是
 根据key得到与之对应的hashcode和table数组的索引值,然后对table[index]值(链表结构)进行遍历,找到与key值相同的Entry对象.
 ##Map -> LinkedHashMap(继承HashMap类并实现Map接口)
 
+LinkedHashMap是HashMap的一个子类,它保留插入的顺序,如果需要输出的顺序和输入时的相同,那么就选用LinkedHashMap.
+```java
+    private final boolean accessOrder;
+```
+accessOrder:按插入顺序时为false;按访问顺序(调用get方法)时为true.
 
+##Map -> TreeMap(继承AbstractMap抽象类并实现NavigableMap接口)
 
+TreeMap和TreeSet一样必须实现Comparator或者Comparable接口来对数据排序
+
+##Map -> Hashtable(继承Dictionary抽象类并实现Map接口)
+
+Hashtable是线程安全的map集合
 
