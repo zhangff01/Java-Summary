@@ -448,6 +448,7 @@ threshold这个变量在HashMap初始化之后如果不做任何操作(也就是
             return putForNullKey(value);
         int hash = hash(key);
         int i = indexFor(hash, table.length);
+	//如果key在链表中已存在,则替换为新value(就是覆盖)
         for (Entry<K,V> e = table[i]; e != null; e = e.next) {
             Object k;
             if (e.hash == hash && ((k = e.key) == key || key.equals(k))) {
@@ -458,19 +459,26 @@ threshold这个变量在HashMap初始化之后如果不做任何操作(也就是
             }
         }
         modCount++;
+	//key不存在,就在table指定位置之处新增Entry
         addEntry(hash, key, value, i);
         return null;
     }
     private void inflateTable(int toSize) {
         // Find a power of 2 >= toSize
-        int capacity = roundUpToPowerOf2(toSize);
+	//计算出大于toSize最临近的2的N此方的值,假设此处传入6,那么最临近的值为2的3次方,也就是8
+        int capacity = roundUpToPowerOf2(toSize);
 
         threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
+	//创建Entry数组，这个Entry数组就是HashMap所谓的容器
         table = new Entry[capacity];
         initHashSeedAsNeeded(capacity);
     }
 ```
+如果table为空,则会创建大小为(int)roundUpToPowerOf2(传入参数)*loadFactor的Entry数组.然后根据hash函数得到key对应的hashcode.
 
+调用indexFor方法得到应该存放在table数组的位置(这里指索引),如果key在链表中已存在,则替换为新value,就是覆盖原来的value值.
+
+并且返回oldValue;key不存在,就在table指定位置之处新增Entry.
 
 
 
