@@ -480,5 +480,47 @@ threshold这个变量在HashMap初始化之后如果不做任何操作(也就是
 
 并且返回oldValue;key不存在,就在table指定位置之处新增Entry.
 
+我们再来看remove方法的源码实现:
+```java
+    public V remove(Object key) {
+        Entry<K,V> e = removeEntryForKey(key);
+        return (e == null ? null : e.value);
+    }
+    final Entry<K,V> removeEntryForKey(Object key) {
+        if (size == 0) {
+            return null;
+        }
+        int hash = (key == null) ? 0 : hash(key);
+        int i = indexFor(hash, table.length);
+        Entry<K,V> prev = table[i];
+        Entry<K,V> e = prev;
+
+        while (e != null) {
+            Entry<K,V> next = e.next;
+            Object k;
+            if (e.hash == hash &&
+                ((k = e.key) == key || (key != null && key.equals(k)))) {
+                modCount++;
+                size--;
+                if (prev == e)
+                    table[i] = next;
+                else
+                    prev.next = next;
+                e.recordRemoval(this);
+                return e;
+            }
+            prev = e;
+            e = next;
+        }
+
+        return e;
+    }
+```
+可以看到remove方法实际上是调用removeEntryForKey(顾名思义是用过key值来删除Entry对象),如果map为空返回null.
+
+根据key得到与之对应的hashcode和table数组的索引值,然后对table[index]值(链表结构)进行遍历,找到与key值相同的Entry对象.
+##Map -> LinkedHashMap(继承HashMap类并实现Map接口)
+
+
 
 
