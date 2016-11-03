@@ -354,3 +354,123 @@ get方法最后return了一个node节点的item值(因为一个node类型包含i
 	//(Iterator接口中定义了boolean hasNext(),E next()和void remove()三个方法)
 ```
 ##Map -> HashMap(继承AbstractMap抽象类并实现Map接口)
+HashMap是基于哈希表实现的.(以下部分内容参考[有且仅有的路的博客](http://blog.csdn.net/u010297957/article/details/51974340))
+###Hash表
+####什么是哈希表
+#####线性表和树
+线性表、树 这些结构中,记录在结构中的相对位置是随机的,和记录的关键字之间不存在确定关系.
+
+因此,在结构中查找时需要进行一系列和关键字的比较.这一类查找方法建立在“比较”的基础上.在顺序查找时,比较的结果为“=”与“≠”2种可能.
+
+在折半查找、二叉排序树查找和B-树查找时,比较的结果为“<”“=”“>”3种可能,查找的效率依赖于查找过程中所进行的比较次数(看看上面LinkedList的查找代码).
+
+#####哈希表
+理想的情况是希望不经过任何比较,一次存取便能得到所查记录,那就必须在记录的存储位置和它的关键字之间建立一个确定的关系f.
+
+使每个关键字和结构中一个唯一的存储位置相对应.因而在查找时,只要根据这个对应关系f找到给定值K的像f(K)(即要找的数据=f(K)).
+
+若结构中存在关键字和K相等的记录,则必定在f(K)的存储位置上,反之在这个位置上没有记录.
+
+由此,不需要比较便可直接取得所查记录.在此,我们称这个对应关系f为哈希(Hash)函数 ,按这个思想建立的表为哈希表.
+
+#####哈希函数
+
+*灵活 
+
+哈希函数是一个映像,因此哈希函数的设定很灵活,只要使得任何关键字由此所得的哈希函数值都落在表长允许的范围之内即可.
+
+*冲突 
+
+对不同的关键字可能得到同一哈希地址,即key1≠key2,而f(key1)=f(key2) ,这种现象称为冲突（collision）.
+
+冲突只能尽量地少,而不能完全避免.因为,哈希函数是从关键字集合到地址集合的映像,而通常关键字集合比较大,
+
+它的元素包括所有可能的关键字,而地址集合的元素仅为哈希表中的地址值.
+
+因此,在实现哈希表这种数据结构的时候不仅要设定一个“好”的哈希函数,而且要设定一种处理冲突的方法.
+
+###HashMap的数据结构:
+![image](https://github.com/zhangff01/Java-Summary/blob/master/Java-Collection/hashmap%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png)
+Entry类的代码:
+```java
+    static class Entry<K,V> implements Map.Entry<K,V> {
+        final K key;
+        V value;
+        Entry<K,V> next;
+        int hash;
+	...
+    }
+```
+查看HashMap中的部分源码:
+```java
+    static final Entry<?,?>[] EMPTY_TABLE = {};
+
+    transient Entry<K,V>[] table = (Entry<K,V>[]) EMPTY_TABLE;
+    
+    public HashMap(int initialCapacity, float loadFactor) {
+        if (initialCapacity < 0)
+            throw new IllegalArgumentException("Illegal initial capacity: " +
+                                               initialCapacity);
+        if (initialCapacity > MAXIMUM_CAPACITY)
+            initialCapacity = MAXIMUM_CAPACITY;
+        if (loadFactor <= 0 || Float.isNaN(loadFactor))
+            throw new IllegalArgumentException("Illegal load factor: " +
+                                               loadFactor);
+
+        this.loadFactor = loadFactor;
+        threshold = initialCapacity;
+        init();
+    }
+    public HashMap(int initialCapacity) {
+        this(initialCapacity, DEFAULT_LOAD_FACTOR);
+    }
+    public HashMap() {
+        this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
+    }
+```
+可以看到HashMap的构造函数最终都是调用HashMap(int initialCapacity, float loadFactor)这个构造函数.
+
+实际上构造函数只是校验了一下参数(HashMap的大小和加载因子),然后执行了这个操作:threshold = initialCapacity.
+
+我们看HashMap的数据结构图可以得知,HashMap的大小就是数组的大小,就是代码中的table变量,此时table数组指向{}的.
+
+threshold这个变量在HashMap初始化之后如果不做任何操作(也就是为空),是没有用的.
+
+只有HashMap进行操作时HashMap才会真正创建大小为threshold(也就是我们传入的初始化大小initialCapacity)的数组.
+
+看下面的put操作:
+```java
+    public V put(K key, V value) {
+        if (table == EMPTY_TABLE) {
+            inflateTable(threshold);
+        }
+        if (key == null)
+            return putForNullKey(value);
+        int hash = hash(key);
+        int i = indexFor(hash, table.length);
+        for (Entry<K,V> e = table[i]; e != null; e = e.next) {
+            Object k;
+            if (e.hash == hash && ((k = e.key) == key || key.equals(k))) {
+                V oldValue = e.value;
+                e.value = value;
+                e.recordAccess(this);
+                return oldValue;
+            }
+        }
+        modCount++;
+        addEntry(hash, key, value, i);
+        return null;
+    }
+    private void inflateTable(int toSize) {
+        // Find a power of 2 >= toSize
+        int capacity = roundUpToPowerOf2(toSize);
+
+        threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
+        table = new Entry[capacity];
+        initHashSeedAsNeeded(capacity);
+    }
+```
+
+
+
+
