@@ -519,6 +519,25 @@ threshold这个变量在HashMap初始化之后如果不做任何操作(也就是
 可以看到remove方法实际上是调用removeEntryForKey(顾名思义是用过key值来删除Entry对象),如果map为空返回null.
 
 根据key得到与之对应的hashcode和table数组的索引值,然后对table[index]值(链表结构)进行遍历,找到与key值相同的Entry对象.
+
+在Map中,key值可以null：
+```java
+    private V putForNullKey(V value) {
+        for (Entry<K,V> e = table[0]; e != null; e = e.next) {
+            if (e.key == null) {
+                V oldValue = e.value;
+                e.value = value;
+                e.recordAccess(this);
+                return oldValue;
+            }
+        }
+        modCount++;
+        addEntry(0, null, value, 0);
+        return null;
+    }
+```
+当key值是null是,Map把它存在table[0]的位置.
+
 ##Map -> LinkedHashMap(继承HashMap类并实现Map接口)
 
 LinkedHashMap是HashMap的一个子类,它保留插入的顺序,如果需要输出的顺序和输入时的相同,那么就选用LinkedHashMap.
@@ -533,5 +552,21 @@ TreeMap和TreeSet一样必须实现Comparator或者Comparable接口来对数据�
 
 ##Map -> Hashtable(继承Dictionary抽象类并实现Map接口)
 
-Hashtable是线程安全的map集合
+Hashtable是线程安全的map集合,使用synchronized关键字来保证map操作的线程同步.
 
+#总结
+##Set:HashSet,LinkedHashSet和TreeSet
+
+Set是基于Map实现的(HashSet,LinkedHashSety基于HashMap;TreeSet是基于NavigableMap).
+
+只不过所有的value都指向一个Object对象的引用(PRESENT),因为基于Map实现的所以Set能存储的数据是不能重复且散列无序的.
+
+##List:ArrayList,LinkedList和Vector
+
+ArrayList和Vector都是基于数组实现的,与ArrayList相比Vector实现了线程安全.
+
+LinkedList是基于双向链表实现的.List能够存储重复的数据且有序(插入顺序).
+
+##Map：HashMap,LinkedHashMap,Hashtable和TreeMap
+
+Map基于Hash表的数据结构来实现,是通过Entry数组构建的,是一种key-value映射方式的存储,key具有唯一性.
