@@ -33,23 +33,22 @@
   拿到Class类型之后,就可以通过一些方法获取类的信息(Student的代码).
   ```java
     package zhangff01.vo;
-
     public class Student {
     	public String name;
-	private int age;
+		private int age;
 	
-	public Student(){}
+		public Student(){}
 	
-	public Student(String name,int age){
-		this.name=name;
-		this.age=age;
-	}
-	private void think(){
-		System.out.println(this.name+" is thinking...");
-	}
-	public void study(){
-		System.out.println(this.name+" is studying...");
-	}
+		public Student(String name,int age){
+			this.name=name;
+			this.age=age;
+		}
+		private void think(){
+			System.out.println(this.name+" is thinking...");
+		}
+		public void study(){
+			System.out.println(this.name+" is studying...");
+		}
     }
   ```
 ###通过反射获取类的字段信息
@@ -58,17 +57,20 @@
   getDeclaredFields能获取到类的所有字段,而getFields只能获取public修饰的字段.
   ```java
     try {
-	Class c = Class.forName("zhangff01.vo.Student");
-	Field[] fields=c.getDeclaredFields();
-	for(Field field:fields){
-		System.out.print("修饰符:"+Modifier.toString(field.getModifiers()));
-		System.out.println("　名称:"+field.getName());
-	}
+		Class c = Class.forName("zhangff01.vo.Student");
+		Field[] fields=c.getDeclaredFields();
+		for(Field field:fields){
+			System.out.print("修饰符:"+Modifier.toString(field.getModifiers()));
+			System.out.println("　名称:"+field.getName());
+		}
      } catch (ClassNotFoundException e) {
-	e.printStackTrace();
+		e.printStackTrace();
      }
   ```
   getDeclaredField和getField方法是根据字段名获得字段.
+  ```java
+  	Field f=c.getDeclaredField("name");
+  ```
   
 ###通过反射获取类的方法信息
   getDeclaredMethods()获取的是类声明的所有的方法,包括public、protected和private方法.
