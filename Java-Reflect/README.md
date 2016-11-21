@@ -71,13 +71,22 @@
   ```java
   	Field f=c.getDeclaredField("name");
   ```
+  Field.setAccessible(Boolean flag);//为true代表可以访问使用private修饰的字段.
   
+  Field.get(Object obj);//参数为类的实例对象,返回字段的值.
 ###通过反射获取类的方法信息
   getDeclaredMethods()获取的是类声明的所有的方法,包括public、protected和private方法.
   
   getMethods()获取的是类的所有共有的方法,包括自身的和从基类继承,接口实现的所有的public方法.(注意是所有的public方法)
   
-  getMethod(name, parameterTypes...);根据方法名称和参数类型获取对应的public方法
+  getMethod(name, parameterTypes...);根据方法名称和参数类型获取对应的public方法.
   
-  getDeclaredMethod(name, parameterTypes...);根据方法名称和参数类型获取对应的方法
+  getDeclaredMethod(name, parameterTypes...);根据方法名称和参数类型获取对应的方法.
+###创建对象
+  当我们获取到所需类的Class对象后,可以用它来创建对象,创建对象的方法有两种:
+
+  使用Class对象的newInstance()方法来创建该Class对象对应类的实例,但是这种方法要求该Class对象对应的类有默认的空构造器.
   
+  先使用Class对象获取指定的Constructor对象,再调用Constructor对象的newInstance()方法来创建Class对象对应类的实例.
+  
+  通过这种方法可以选定构造方法创建实例.(其实和获取类的方法一样)
