@@ -146,6 +146,11 @@ class Outter{
 		public Outter(){}
 		static class inner(){}
 }
+//调用方式
+...
+Outter.inner oi=new Outter.inner();
+...
+
 ```
 
      
