@@ -26,3 +26,73 @@
 
 3.通过调用线程的sleep()或join()或发出了I/O请求时,线程会进入到阻塞状态.
 ####死亡状态(Dead):线程执行完了或者因异常退出了run()方法,该线程结束生命周期.
+###线程的生命周期如下图:
+![image](https://github.com/zhangff01/Java-Summary/blob/master/Java-Thread/Thread.png)
+##线程的创建和启动
+###1.继承Thread类,重写该类的run()方法
+```java
+package zhangff01;
+
+public class MyThread extends Thread {
+	@Override
+	public void run(){
+		for(int i=0;i<3;i++){
+			System.out.println(i);
+		}
+	}
+}
+...
+public class MainThread {
+	public static void main(String[] args) {
+		Thread tr=new MyThread();
+		tr.start();
+		System.out.println("...end");
+	}
+}
+//运行结果:
+...end
+0
+1
+2
+```
+###2.实现Runnable接口并重写run()方法,创建实现类的实例并作为参数传递给Thread构造函数来创建Thread实例对象.
+```java
+package zhangff01;
+public class MyThread2 implements Runnable {
+	@Override
+	public void run() {
+		for(int i=0;i<3;i++){
+			System.out.println(i);
+		}
+	}
+}
+...
+public class MainThread {
+	public static void main(String[] args) {
+		Thread tr2=new Thread(new MyThread2());
+		tr2.start();
+		System.out.println("...end");
+	}
+}
+//运行结果:
+...end
+0
+1
+2
+```
+##线程的方法
+###yield()方法
+当调用线程的yield()方法时,此线程会从运行状态转换为就绪状态,因为yield()方法只能让同级的线程有执行的机会,
+
+所以接下来cpu接下来调度哪个线程是随机的,可能会出现A线程调用了yield()方法后,接下来CPU仍然调度了A线程的情况.
+###sleep()方法(Thread类的静态方法)
+使当前线程(即调用该方法的线程)暂停执行一段时间,会进入阻塞状态,让其他线程有机会继续执行.
+
+但它并不释放对象锁,也就是说如果有synchronized同步块,其他线程仍然不能访问共享数据.
+
+sleep()可以使低优先级的线程得到执行的机会,当然也可以让同优先级,高优先级的线程有执行的机会.
+
+sleep()调用之后当指定的时间到了又会自动恢复运行状态.
+###join()
+等待该方法的线程执行完毕后再往下继续执行,有一种感觉就是程序像单线程一样顺序执行.
+###wait()和notify()、notifyAll()----(这三个是Object类的方法)
