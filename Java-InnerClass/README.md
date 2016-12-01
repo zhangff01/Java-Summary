@@ -99,10 +99,10 @@ public class InnerClassTest {
 
 	public static void main(String[] args) {
 		CarClass cc=new CarClass("Volkswagon cc",20);
-    		//第一种:通过外部类的实例new一个内部类
+    	  //第一种:通过外部类的实例new一个内部类
 		CarClass.Engine ccengine=cc.new Engine(3.0f);
-    		//第二种:通过外部类的方法获取内部类的实例
-    		CarClass.Engine engine=cc.getEngineInstance();
+    	//第二种:通过外部类的方法获取内部类的实例
+    	CarClass.Engine engine=cc.getEngineInstance();
 		cc.carInfo(ccengine);
 		ccengine.info();
 	}
