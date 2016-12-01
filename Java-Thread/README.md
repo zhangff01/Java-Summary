@@ -107,3 +107,134 @@ wait()方法使当前线程暂停执行并释放对象锁标示,让其他线程�
 即同步阻塞状态(只有锁标志等待池中线程能够获取锁标志),获取锁标志则进入就绪状态.
 
 如果锁标志等待池中没有线程,则notify()不起作用.notifyAll()则从对象等待池中移走所有等待那个对象的线程并放到锁标志等待池中.
+###synchronized
+synchronized锁的是对象,而不是代码,看下面的例子:
+```java
+package zhangff01;
+public class MyThread implements Runnable {
+	String key;
+	int val;
+	
+	public MyThread(){}
+	public MyThread(String key,int val){
+		this.key=key;
+		this.val=val;
+	}
+	
+	@Override
+	public void run() {
+		printVal();
+	}
+	
+	public synchronized void printVal(){
+		for(int i=0;i<3;i++){
+			System.out.println(Thread.currentThread().getName()+":"+i);
+			System.out.println(Thread.currentThread().getName()+":"+key);
+			System.out.println(Thread.currentThread().getName()+":"+val);
+		}
+	}
+}
+...
+package zhangff01;
+public class MainTest {
+	public static void main(String[] args) {
+		Thread tr=new Thread(new MyThread("one",1),"Thread_A");
+		Thread tr2=new Thread(new MyThread("two",2),"Thread_B");
+		tr.start();
+		tr2.start();
+	}
+}
+//输出结果
+Thread_A:0
+Thread_B:0
+Thread_B:two
+Thread_B:2
+Thread_A:one
+Thread_B:1
+Thread_B:two
+Thread_B:2
+Thread_A:1
+Thread_B:2
+Thread_B:two
+Thread_A:1
+Thread_B:2
+Thread_A:one
+Thread_A:1
+Thread_A:2
+Thread_A:one
+Thread_A:1
+```
+输出结果显示用synchronized修饰的方法在多线程环境下执行的时候还是随机的,交替着进行的,并不如你想的那样是整个方法作为一个整体执行的.
+
+但是如果把程序稍微改动一下,就可以实现我们想要的效果,如下:
+```java
+package zhangff01;
+public class MainTest {
+	public static void main(String[] args) {
+		MyThread mt=new MyThread("one",1);
+		Thread tr=new Thread(mt,"Thread_A");
+		Thread tr2=new Thread(mt,"Thread_B");
+		tr.start();
+		tr2.start();
+	}
+}
+//输出结果
+Thread_A:0
+Thread_A:one
+Thread_A:1
+Thread_A:1
+Thread_A:one
+Thread_A:1
+Thread_A:2
+Thread_A:one
+Thread_A:1
+Thread_B:0
+Thread_B:one
+Thread_B:1
+Thread_B:1
+Thread_B:one
+Thread_B:1
+Thread_B:2
+Thread_B:one
+Thread_B:1
+```
+####所以这里我们得到synchronized的第一种用法(此时的synchronized的作用范围在一个类的实例内):
+在多个线程操作一个对象实例时保证方法同步.即如果多个线程操作一个类的同一个实例对象,那么在这个实例对象的类中,
+
+synchronized修饰的方法在这种多线程的环境中是同步的(有多个synchronized的方法时,
+
+只要有一个线程调用了synchronized方法,其他线程都不能进入).但是如果是多个线程操作这个类的不同的实例对象,则方法还是不同步的
+
+(还是印证了那句话,锁的是对象,因为是不同的对象实例,所以不存在锁住的情况)
+
+改动代码如下:
+```java
+public synchronized static void printVal(){
+	for(int i=0;i<3;i++){
+		System.out.println(Thread.currentThread().getName()+":"+i);
+	}
+}
+...
+package zhangff01;
+public class MainTest {
+	public static void main(String[] args) {
+		Thread tr=new Thread(new MyThread("one",1),"Thread_A");
+		Thread tr2=new Thread(new MyThread("two",2),"Thread_B");
+		tr.start();
+		tr2.start();
+	}
+}
+//输出结果
+Thread_A:0
+Thread_A:1
+Thread_A:2
+Thread_B:0
+Thread_B:1
+Thread_B:2
+```
+####这里我们得到synchronized的第二种用法(此时的synchronized的作用范围在一个类):
+如果一个类的静态方法是被synchronized修饰,则此方法在所有类的实例中都是同步的.
+
+synchronized关键字除了可以直接修饰方法之外,还可以用于方法中的某个区块中,synchronized(this){...}的作用域是当前对象.
+
+synchronized(MyThread.class){...}的作用域是整个类(个人理解和synchronized修饰的static方法类似).
