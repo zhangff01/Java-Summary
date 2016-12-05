@@ -235,6 +235,10 @@ Thread_B:2
 ####这里我们得到synchronized的第二种用法(此时的synchronized的作用范围在一个类):
 如果一个类的静态方法是被synchronized修饰,则此方法在所有类的实例中都是同步的.
 
-synchronized关键字除了可以直接修饰方法之外,还可以用于方法中的某个区块中,synchronized(this){...}的作用域是当前对象.
+synchronized关键字除了可以直接修饰方法之外,还可以用于方法中的某个区块中(推荐这样做,减小同步的粒度),
+
+synchronized(this){...}的作用域是当前对象.
 
 synchronized(MyThread.class){...}的作用域是整个类(个人理解和synchronized修饰的static方法类似).
+###volatile
+volatile能保证可见性而不能保证原子性,而synchronized既能保证可见性又能保证原子性.
