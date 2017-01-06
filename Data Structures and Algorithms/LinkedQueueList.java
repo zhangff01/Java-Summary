@@ -29,6 +29,8 @@ public class LinkedQueueList<T> implements Iterable<T> {
 	public T dequeue(){
 		T t=first.t;
 		first=first.next;
+		if(isEmpty())
+			last=null;
 		N--;
 		return t;
 	}
