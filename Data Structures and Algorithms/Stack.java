@@ -1,5 +1,6 @@
 import java.util.Iterator;
 /**
+ * @description 数组实现的栈
  * @author zhangff01
  * @param <T>
  */
