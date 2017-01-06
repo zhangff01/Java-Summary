@@ -1,5 +1,3 @@
-package com.tianlian.Cw.projectMgr.agentincome.service.impl;
-
 import java.util.Iterator;
 /**
  * @description 单向链表实现的栈
