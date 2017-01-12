@@ -69,10 +69,37 @@ public final class SortAlgorithms {
 		}
 	}
 	/**
-	 * @name 
+	 * @name 归并排序 
 	 * @description 
 	 */
+	private static int[] aux;
 	public static void MergeSort(int[] arr){
-		
+		aux=new int[arr.length];//归并时的辅助数组
+		sort(arr,0,arr.length-1);
+	}
+	private static void sort(int[] arr,int low,int high){
+		if(low>=high)
+			return;
+		int mid=low+(high-low)/2;
+		sort(arr,low,mid);
+		sort(arr,mid+1,high);
+		merge(arr,low,mid,high);
+	}
+	private static void merge(int[] arr,int low,int mid,int high){
+		int i=low,j=mid+1;
+		for(int k=low;k<=high;k++){
+			aux[k]=arr[k];
+		}
+		for(int k=low;k<=high;k++){
+			if(i>mid){
+				arr[k]=aux[j++];
+			}else if(j>high){
+				arr[k]=aux[i++];
+			}else if(aux[j]<aux[i]){
+				arr[k]=aux[j++];
+			}else{
+				arr[k]=aux[i++];
+			}
+		}
 	}
 }
