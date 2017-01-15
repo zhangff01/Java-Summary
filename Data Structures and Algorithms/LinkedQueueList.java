@@ -27,10 +27,13 @@ public class LinkedQueueList<T> implements Iterable<T> {
 		N++;
 	}
 	public T dequeue(){
+		if(isEmpty()){
+			first=null;
+			last=null;
+			return null;
+		}			
 		T t=first.t;
 		first=first.next;
-		if(isEmpty())
-			last=null;
 		N--;
 		return t;
 	}
@@ -46,15 +49,15 @@ public class LinkedQueueList<T> implements Iterable<T> {
 		return new LinkedQueueListIterator();
 	}
 	private class LinkedQueueListIterator implements Iterator<T>{
-		private Node Ifirst=first;
+		private Node current=first;
 		@Override
 		public boolean hasNext() {
-			return Ifirst!=null;
+			return current!=null;
 		}
 		@Override
 		public T next() {
-			T t=Ifirst.t;
-			Ifirst=Ifirst.next;
+			T t=current.t;
+			current=current.next;
 			return t;
 		}
 		@Override
