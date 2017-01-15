@@ -28,6 +28,9 @@ public class LinkedStackList<T> implements Iterable<T> {
 		N++;
 	}
 	public T pop(){
+		if(isEmpty()){
+			return null;
+		}
 		T t=first.t;
 		first=first.next;
 		N--;
@@ -39,16 +42,16 @@ public class LinkedStackList<T> implements Iterable<T> {
 		return new LinkedStackListIterator();
 	}
 	private class LinkedStackListIterator implements Iterator<T>{
-		private Node iterator_first=first;
+		private Node current=first;
 		@Override
 		public boolean hasNext() {
-			return iterator_first!=null;
+			return current!=null;
 		}
 
 		@Override
 		public T next() {
-			T t=iterator_first.t;
-			iterator_first=iterator_first.next;
+			T t=current.t;
+			current=current.next;
 			return t;
 		}
 
