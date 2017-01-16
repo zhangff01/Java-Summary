@@ -102,4 +102,65 @@ public final class SortAlgorithms {
 			}
 		}
 	}
+	/**
+	 * @name 快速排序(不稳定)
+	 * @description 排序过程
+	 * 1.设置low,high变量分别代表前后排序的索引值(第一遍时low=0,high=arr.length);
+	 * 2.默认以数组的第一个元素为比较关键值，key=arr[low];
+	 * 3.从high开始向前开始搜索(high--)，直到找到第一个小于key值的arr[high]，并将它赋与arr[low];
+	 * 4.从low开始向后搜索(low++)，找到第一个大于key的值arr[low]，并将它赋与arr[high];
+	 * 5.如果low<high，循环执行步骤3,4。
+	 */
+	public static void QuickSort(int[] arr){
+		RecursionSort(arr,0,arr.length-1);
+	}
+	private static void RecursionSort(int[] arr,int low,int high){
+		if(low<high){
+			int current=Partition(arr, low, high);
+			RecursionSort(arr, low, current-1);
+			RecursionSort(arr, current+1, high);
+		}
+	}
+	private static int Partition(int[] arr,int low,int high){
+		int key=arr[low];
+		while(low<high){
+			while(low<high&&arr[high]>=key){
+				high--;
+			}
+			arr[low]=arr[high];
+			while(low<high&&arr[low]<=key){
+				low++;
+			}
+			arr[high]=arr[low];
+		}
+		arr[low]=key;
+		return low;
+	}
+	//标准实现
+	public static void QuickSort(int[] arr,int low,int high){
+		int l=low,h=high;
+		int key=arr[low];
+		while(l<h){
+			while(l<h&&arr[h]>=key)
+				h--;
+			if(l<h){
+				int temp=arr[l];
+				arr[l]=arr[h];
+				arr[h]=temp;
+				l++;
+			}
+			while(l<h&&arr[l]<=key)
+				l++;
+			if(l<h){
+				int temp=arr[l];
+				arr[l]=arr[h];
+				arr[h]=temp;
+				h--;
+			}
+		}
+		if(l>low)
+			QuickSort(arr,low,l-1);
+		if(h<high)
+			QuickSort(arr,l+1,high);
+	}
 }
