@@ -163,4 +163,34 @@ public final class SortAlgorithms {
 		if(h<high)
 			QuickSort(arr,l+1,high);
 	}
+	/**
+	 * @name 堆排序
+	 * @description 排序过程：for循环构造堆,while循环将最大元素arr[1]和最后元素arr[N]交换并做下沉处理,只到堆减空 
+	 */
+	public static void HeapSort(int[] arr){
+		int N=arr.length;
+		for(int k=N/2;k>=1;k--){
+			sink(arr,k,N);
+		}
+		while(N>1){
+			exch(arr,1,N--);
+			sink(arr,1,N);
+		}
+	}
+	private static void sink(int[] arr,int k,int N){
+		while(2*k<=N){
+			int j=2*k;
+			if(j<N&&arr[j-1]<arr[j])
+				j++;
+			if(arr[k-1]>arr[j-1])
+				break;
+			exch(arr,k,j);
+			k=j;
+		}
+	}
+	private static void exch(int[] arr,int i,int j){
+		int temp=arr[i-1];
+		arr[i-1]=arr[j-1];
+		arr[j-1]=temp;
+	}
 }
