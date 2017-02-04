@@ -165,7 +165,9 @@ public final class SortAlgorithms {
 	}
 	/**
 	 * @name 堆排序
-	 * @description 排序过程：for循环构造堆,while循环将最大元素arr[1]和最后元素arr[N]交换并做下沉处理,只到堆减空 
+	 * @property 1.堆(二叉堆):是一组能够用堆有序的完全二叉树排序的元素. 
+	 * @property 2.堆有序:每个节点都大于等于它的两个子节点
+         * @description 排序过程：for循环构造堆,while循环将最大元素arr[1]和最后元素arr[N]交换并做下沉处理,只到堆减空 
 	 */
 	public static void HeapSort(int[] arr){
 		int N=arr.length;
@@ -192,5 +194,32 @@ public final class SortAlgorithms {
 		int temp=arr[i-1];
 		arr[i-1]=arr[j-1];
 		arr[j-1]=temp;
+	}
+	/**
+	 *由下至上的堆有序化(上浮)    
+	 */
+	public static void swim(int[] arr,int k){
+		while(k>1&&arr[k]>arr[k/2]){
+			int temp=arr[k/2];
+			arr[k/2]=arr[k];
+			arr[k]=temp;
+			k=k/2;
+		}
+	}
+	/**
+	 *由上至下的堆有序化(下沉)    
+	 */
+	public static void sink(int[] arr,int k){
+		while(2*k<=arr.length){
+			int c=2*k;
+			if(arr[c+1]>arr[c])
+				c++;
+			if(arr[k]>arr[c])
+				break;
+			int temp=arr[k];
+			arr[k]=arr[c];
+			arr[c]=temp;
+			k=c;
+		}
 	}
 }
