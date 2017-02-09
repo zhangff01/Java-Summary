@@ -22,4 +22,25 @@ Buffer是一个对象,它包含一些要写入或者刚读取的数据.在NIO中
 
 ByteBuffer,ShortBuffer,IntBuffer,LongBuffer,FloatBuffer,DoubleBuffer,CharBuffer.
 
-每一个Buffer类都是Buffer接口的一个实例
+每一个Buffer类都是Buffer接口的一个实例.除了ByteBuffer,每一个Buffer类都有一样的操作,只是处理的数据类型不一样.
+
+因为大多数标准I/O操作都使用ByteBuffer,所以它具有所有共享的缓冲区操作以及一些特有的操作.
+###什么是通道？
+Channel是一个对象,可以通过它读取和写入数据.拿NIO与原来的I/O做个比较,通道就像是流.
+
+如上文所述,所有的数据都通过Buffer对象来处理,数据永远不会直接写入到或从读取自通道中,而是将数据写入或者读取到
+
+一个或者多个字节的缓冲区中.
+
+通道和流的不同之处在于通道是双向的,可以r,w或者同时r和w,而流是单向的(一个流必须是InputStream或者OutputStream的子类).
+##NIO的读和写
+###从文件中读取
+从一个文件中读取一些数据.如果使用原来的I/O,那么我们只需创建一个FileInputStream并从它那里读取.
+
+而在NIO中,情况稍有不同:我们首先从FileInputStream获取一个Channel对象,然后使用这个通道来读取数据.
+
+在NIO系统中,任何时候执行一个读操作,都是从通道中读取,但是不是直接从通道读取.
+
+因为所有数据最终都驻留在缓冲区中,所以是从通道读到缓冲区中.
+
+因此读取文件涉及三个步骤:(1)从FileInputStream获取 Channel,(2)创建Buffer,(3)将数据从Channel读到Buffer中.
