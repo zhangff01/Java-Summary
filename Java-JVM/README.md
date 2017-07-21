@@ -46,7 +46,7 @@ GC开始时，对象只会存在于Eden空间和From Survior区域，To Survior�
 
 -XX:MaxPermSize失去了意义，取而代之的是-XX:MaxMetaspaceSize。
 
-Minor GC 和 Full GC的区别
+**Minor GC 和 Full GC的区别**
 
 新生代GC（Minor GC）：Minor GC指发生在新生代的GC
 
