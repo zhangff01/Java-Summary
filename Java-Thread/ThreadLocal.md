@@ -1,9 +1,9 @@
 ThreadLocal
-#介绍
+# 介绍
 ThreadLocal,怎么理解,翻译过来就是线程本地变量的意思,在多线程中,有些变量我们不想让每个线程的修改而影响到其他线程对该变量的使用,可以考虑使用ThreadLocal.
 
 **如果你需要在多个进程之间通信,则使用同步机制,如果需要隔离多个线程之间的共享冲突,则需要使用ThreadLocal.**
-#ThreadLocal实现
+# ThreadLocal实现
 ThreadLocal是通过map来实现的,查看源代码我们可以看看实现:
 ```java
   public void set(T value) {
